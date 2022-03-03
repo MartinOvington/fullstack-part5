@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -11,6 +12,8 @@ const App = () => {
   const [blogTitle, setBlogTitle] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
   const [blogUrl, setBlogUrl] = useState('')
+  const [message, setMessage] = useState(null)
+  const [msgType, setMsgType] = useState('error')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -27,6 +30,14 @@ const App = () => {
     }
   }, [])
 
+  const createNotification = (message, msgType) => {
+    setMsgType(msgType)
+    setMessage(message)
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     
@@ -40,13 +51,13 @@ const App = () => {
       )
 
       blogService.setToken(user.token)
+      setMessage(null)
       setUser(user)
       setUsername('')
       setPassword('')
+      createNotification('logged in', 'updateMsg')
     } catch (exception) {
-      setTimeout(() => {
-        console.log('Invalid login')
-      }, 5000)
+      createNotification('wrong username or password', 'error')
     }
   }
   
@@ -56,6 +67,7 @@ const App = () => {
     setUser(null)
     window.localStorage.removeItem('loggedBlogappUser')
     blogService.setToken(null)
+    createNotification('logged out', 'updateMsg')
   }
 
   const addBlog = (event) => {
@@ -69,10 +81,14 @@ const App = () => {
     blogService
       .create(blogObject)
       .then(returnedBlog => {
+        createNotification(`a new blog ${blogTitle} by ${blogAuthor}`, 'updateMsg')
         setBlogs(blogs.concat(returnedBlog))
         setBlogTitle('')
         setBlogAuthor('')
         setBlogUrl('')
+      })
+      .catch(error => {
+        createNotification('blog creation failed', 'error')
       })
   }
 
@@ -102,9 +118,9 @@ const App = () => {
       <div>
         password
           <input
-          type='text'
+          type='password'
           value={password}
-          name='password'
+          name='Password'
           onChange={({ target }) => setPassword(target.value)}
         />
       </div>
@@ -139,6 +155,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification message={message} msgType={msgType} />
       { user === null ?
         loginForm() :
         <div>
