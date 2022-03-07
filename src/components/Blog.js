@@ -1,5 +1,5 @@
 import { useState } from 'react'
-const Blog = ({blog, increaseLikes}) => {
+const Blog = ({blog, increaseLikes, deleteBlog, username}) => {
   const [viewDetails, setViewDetails] = useState(false)
 
   const blogStyle = {
@@ -18,12 +18,24 @@ const Blog = ({blog, increaseLikes}) => {
     <div>
       {viewDetails ?
       <div style={blogStyle}>
-        {blog.title} {blog.author} 
-        <button onClick={toggleViewDetails}>hide</button><br></br>
-        {blog.url} <br></br>
-        likes {blog.likes}
-        <button onClick={increaseLikes}>like</button><br></br>
-        {blog.user? blog.user.name : ''} 
+        <div>
+          {blog.title} {blog.author} 
+          <button onClick={toggleViewDetails}>hide</button>
+        </div>
+        <div>
+          {blog.url}
+        </div>
+        <div>
+          likes {blog.likes}
+          <button onClick={increaseLikes}>like</button>
+        </div>
+        <div>
+          {blog.user? blog.user.name : ''}
+        </div>
+        {(!blog.user || blog.user.username === username)?
+          <button onClick={deleteBlog}>remove</button> :
+          ''
+        }
       </div> :
       <div style={blogStyle}>
         {blog.title} {blog.author}

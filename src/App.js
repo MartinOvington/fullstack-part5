@@ -101,11 +101,19 @@ const App = () => {
     }
   }
 
-  /*
-  const deleteBlog = id => {
-    
+  const deleteBlog = async id => {
+    const blog = blogs.find(b => b.id === id)
+    try {
+      if (window.confirm(`Remove ${blog.title} by ${blog.author}`)) {
+        await blogService.deleteBlog(id)
+        setBlogs(blogs.filter(b => b.id !== id))
+      }
+    } catch {
+      createNotification('was already removed from server', 'error')
+      setBlogs(blogs.filter(b => b.id !== id))
+    }
   }
-  */
+
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -150,7 +158,9 @@ const App = () => {
           {blogs.sort((b1, b2) => b2.likes - b1.likes)
           .map(blog =>
             <Blog key={blog.id} blog={blog} 
-              increaseLikes={() => increaseLikes(blog.id)}/>
+              increaseLikes={() => increaseLikes(blog.id)}
+              deleteBlog={() => deleteBlog(blog.id)} 
+              username={user.username}/>
           )}
         </div>
       }
