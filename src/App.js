@@ -72,22 +72,20 @@ const App = () => {
     createNotification('logged out', 'updateMsg')
   }
 
-  const addBlog = (blogObject) => {
+  const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    blogService
-      .create(blogObject)
-      .then(returnedBlog => {
-        createNotification(
-          `a new blog 
-          ${blogObject.title === undefined ? '' : blogObject.title} 
-          by 
-          ${blogObject.author === undefined ? '' : blogObject.author}`, 
-          'updateMsg')
-        setBlogs(blogs.concat(returnedBlog))
-      })
-      .catch(() => {
-        createNotification('blog creation failed', 'error')
-      })
+    try {
+      const returnedBlog = await blogService.create(blogObject)
+      createNotification(
+        `a new blog 
+        ${blogObject.title === undefined ? '' : blogObject.title} 
+        by 
+        ${blogObject.author === undefined ? '' : blogObject.author}`, 
+        'updateMsg')
+      setBlogs(blogs.concat(returnedBlog))
+    } catch(exception) {
+      createNotification('blog creation failed', 'error')
+    }
   }
 
   const increaseLikes = id => {
@@ -145,7 +143,8 @@ const App = () => {
           <Togglable buttonLabel="new blog" ref={blogFormRef}>
             <BlogForm createBlog={addBlog} />
           </Togglable>
-          {blogs.map(blog =>
+          {blogs.sort((b1, b2) => b2.likes - b1.likes)
+          .map(blog =>
             <Blog key={blog.id} blog={blog} 
               increaseLikes={() => increaseLikes(blog.id)}/>
           )}
