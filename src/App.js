@@ -90,6 +90,21 @@ const App = () => {
       })
   }
 
+  const increaseLikes = id => {
+    const blog = blogs.find(b => b.id === id)
+    const changedBlog = { ...blog, likes: blog.likes + 1 }
+  
+    blogService
+      .update(id, changedBlog)
+      .then(returnedBlog => {
+        setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+      })
+      .catch(() => {
+        createNotification('was already removed from server', 'error')
+        setBlogs(blogs.filter(n => n.id !== id))
+      })
+  }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -131,7 +146,8 @@ const App = () => {
             <BlogForm createBlog={addBlog} />
           </Togglable>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} 
+              increaseLikes={() => increaseLikes(blog.id)}/>
           )}
         </div>
       }
