@@ -20,7 +20,7 @@ const App = () => {
       .getAll()
       .then(blogs => {
         setBlogs( blogs )
-      })  
+      })
   }, [])
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({
         username, password,
@@ -62,7 +62,7 @@ const App = () => {
       createNotification('wrong username or password', 'error')
     }
   }
-  
+
   const handleLogout = (event) => {
     event.preventDefault()
 
@@ -80,7 +80,7 @@ const App = () => {
         `a new blog 
         ${blogObject.title === undefined ? '' : blogObject.title} 
         by 
-        ${blogObject.author === undefined ? '' : blogObject.author}`, 
+        ${blogObject.author === undefined ? '' : blogObject.author}`,
         'updateMsg')
       setBlogs(blogs.concat(returnedBlog))
     } catch(exception) {
@@ -91,11 +91,11 @@ const App = () => {
   const increaseLikes = async id => {
     const blog = blogs.find(b => b.id === id)
     const changedBlog = { ...blog, likes: blog.likes + 1 }
-  
+
     try {
       const returnedBlog = await blogService.update(id, changedBlog)
       setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
-    } catch {
+    } catch(err) {
       createNotification('was already removed from server', 'error')
       setBlogs(blogs.filter(n => n.id !== id))
     }
@@ -108,7 +108,7 @@ const App = () => {
         await blogService.deleteBlog(id)
         setBlogs(blogs.filter(b => b.id !== id))
       }
-    } catch {
+    } catch(err) {
       createNotification('was already removed from server', 'error')
       setBlogs(blogs.filter(b => b.id !== id))
     }
@@ -119,7 +119,7 @@ const App = () => {
     <form onSubmit={handleLogin}>
       <div>
         username
-          <input
+        <input
           type='text'
           value={username}
           name='Username'
@@ -128,7 +128,7 @@ const App = () => {
       </div>
       <div>
         password
-          <input
+        <input
           type='password'
           value={password}
           name='Password'
@@ -156,12 +156,12 @@ const App = () => {
             <BlogForm createBlog={addBlog} />
           </Togglable>
           {blogs.sort((b1, b2) => b2.likes - b1.likes)
-          .map(blog =>
-            <Blog key={blog.id} blog={blog} 
-              increaseLikes={() => increaseLikes(blog.id)}
-              deleteBlog={() => deleteBlog(blog.id)} 
-              username={user.username}/>
-          )}
+            .map(blog =>
+              <Blog key={blog.id} blog={blog}
+                increaseLikes={() => increaseLikes(blog.id)}
+                deleteBlog={() => deleteBlog(blog.id)}
+                username={user.username}/>
+            )}
         </div>
       }
     </div>
