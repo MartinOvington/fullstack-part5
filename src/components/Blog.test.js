@@ -35,4 +35,21 @@ describe('blog element tests', () => {
     expect(div).toHaveTextContent(/www.google.com/)
     expect(div).toHaveTextContent(/likes/)
   })
+
+  test('clicking like button twice calls handler twice', () => {
+
+    const mockHandler = jest.fn()
+
+    render(<Blog blog={note} increaseLikes={mockHandler} />)
+    const viewButton = screen.getByText('view')
+
+    userEvent.click(viewButton)
+
+    const likeButton = screen.getByText('like')
+
+    userEvent.click(likeButton)
+    userEvent.click(likeButton)
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
+  })
 })
