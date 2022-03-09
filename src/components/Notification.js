@@ -1,5 +1,5 @@
 // msgType is 'error' or 'updateMsg'
-const Notification = ({message, msgType}) => {
+const Notification = ({ message, msgType }) => {
   if (message === null) {
     return null
   }
