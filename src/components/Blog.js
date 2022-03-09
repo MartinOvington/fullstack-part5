@@ -15,7 +15,7 @@ const Blog = ({ blog, increaseLikes, deleteBlog, username }) => {
   }
 
   return (
-    <div>
+    <div className='blog'>
       {viewDetails ?
         <div style={blogStyle}>
           <div>
