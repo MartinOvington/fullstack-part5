@@ -1,9 +1,10 @@
 import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
-test('initially renders only title and author', () => {
+describe('blog element tests', () => {
   const note = {
     title: 'test blog',
     author: 'test author',
@@ -11,12 +12,27 @@ test('initially renders only title and author', () => {
     likes: 0
   }
 
-  const { container } = render(<Blog blog={note} />)
-  screen.debug()
+  test('initially renders only title and author', () => {
+    const { container } = render(<Blog blog={note} />)
 
-  const div = container.querySelector('.blog')
-  expect(div).toHaveTextContent(/test blog/)
-  expect(div).toHaveTextContent(/test author/)
-  expect(div).not.toHaveTextContent(/www.google.com/)
-  expect(div).not.toHaveTextContent(/likes:/)
+    const div = container.querySelector('.blog')
+
+    expect(div).toHaveTextContent(/test blog/)
+    expect(div).toHaveTextContent(/test author/)
+    expect(div).not.toHaveTextContent(/www.google.com/)
+    expect(div).not.toHaveTextContent(/likes/)
+  })
+
+  test('also renders url and likes when view is clicked', () => {
+    const { container } = render(<Blog blog={note} />)
+    const button = screen.getByText('view')
+    userEvent.click(button)
+
+    const div = container.querySelector('.blog')
+
+    expect(div).toHaveTextContent(/test blog/)
+    expect(div).toHaveTextContent(/test author/)
+    expect(div).toHaveTextContent(/www.google.com/)
+    expect(div).toHaveTextContent(/likes/)
+  })
 })
