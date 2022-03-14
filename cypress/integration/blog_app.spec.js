@@ -35,4 +35,42 @@ describe('Blog app', function() {
         .and('have.css', 'color', 'rgb(255, 0, 0)')
     })
   })
+
+  describe('When logged in', function() {
+    beforeEach(function() {
+      cy.get('[data-cy=username-input').type('testuser')
+      cy.get('[data-cy=password-input').type('testpassword')
+      cy.contains('login').click()
+    })
+
+    it('A blog can be created', function() {
+      cy.contains('new blog').click()
+      cy.get('[data-cy=blog-title-input]').type('test blog')
+      cy.get('[data-cy=blog-author-input]').type('test author')
+      cy.get('[data-cy=blog-url-input]').type('www.testurl.com')
+      cy.get('[data-cy=create-blog-button]').click()
+
+      cy.contains('test blog')
+      cy.contains('test author')
+    })
+
+    describe('When a blog has been created', function() {
+      beforeEach(function() {
+        cy.contains('new blog').click()
+        cy.get('[data-cy=blog-title-input]').type('test blog')
+        cy.get('[data-cy=blog-author-input]').type('test author')
+        cy.get('[data-cy=blog-url-input]').type('www.testurl.com')
+        cy.get('[data-cy=create-blog-button]').click()
+      })
+
+      it('A user can like a blog', function() {
+        cy.contains('view').click()
+        cy.contains('likes 0')
+        cy.contains('like').click()
+        cy.contains('likes 1')
+        cy.contains('like').click()
+        cy.contains('likes 2')
+      })
+    })
+  })
 })
