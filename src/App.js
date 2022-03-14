@@ -107,6 +107,7 @@ const App = () => {
       if (window.confirm(`Remove ${blog.title} by ${blog.author}`)) {
         await blogService.deleteBlog(id)
         setBlogs(blogs.filter(b => b.id !== id))
+        createNotification('blog removed', 'updateMsg')
       }
     } catch(err) {
       createNotification('was already removed from server', 'error')

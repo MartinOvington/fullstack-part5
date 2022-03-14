@@ -66,10 +66,37 @@ describe('Blog app', function() {
       it('A user can like a blog', function() {
         cy.contains('view').click()
         cy.contains('likes 0')
+
         cy.contains('like').click()
         cy.contains('likes 1')
+
         cy.contains('like').click()
         cy.contains('likes 2')
+      })
+
+      it('A user can delete their blog', function() {
+        cy.contains('view').click()
+        cy.contains('remove').click()
+
+        cy.get('.updateMsg')
+          .should('contain', 'blog removed')
+          .and('have.css', 'color', 'rgb(0, 128, 0)')
+      })
+
+      it('A different user cannot delete the blog', function() {
+        const user2 = {
+          name: 'tester2',
+          username: 'testuser2',
+          password: 'testpassword'
+        }
+        cy.request('POST', 'http://localhost:3003/api/users', user2)
+        cy.contains('logout').click()
+        cy.get('[data-cy=username-input').type('testuser2')
+        cy.get('[data-cy=password-input').type('testpassword')
+        cy.contains('login').click()
+        cy.contains('view').click()
+
+        cy.contains('remove').should('not.exist')
       })
     })
   })
