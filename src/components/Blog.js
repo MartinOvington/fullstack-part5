@@ -15,7 +15,7 @@ const Blog = ({ blog, increaseLikes, deleteBlog, username }) => {
   }
 
   return (
-    <div className='blog'>
+    <div className='blog' data-cy='blog-post'>
       {viewDetails ?
         <div style={blogStyle}>
           <div>
@@ -27,7 +27,12 @@ const Blog = ({ blog, increaseLikes, deleteBlog, username }) => {
           </div>
           <div>
             likes {blog.likes}
-            <button onClick={increaseLikes}>like</button>
+            <button
+              onClick={increaseLikes}
+              data-cy='like-button'
+            >
+              like
+            </button>
           </div>
           <div>
             {blog.user? blog.user.name : ''}

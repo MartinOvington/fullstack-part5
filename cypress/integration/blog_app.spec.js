@@ -99,5 +99,49 @@ describe('Blog app', function() {
         cy.contains('remove').should('not.exist')
       })
     })
+
+    describe('When multiple blog have been created', function() {
+      beforeEach(function() {
+        cy.get('[data-cy=togglable-button]').click()
+        cy.get('[data-cy=blog-title-input]').type('test blog')
+        cy.get('[data-cy=blog-author-input]').type('test author')
+        cy.get('[data-cy=blog-url-input]').type('www.testurl.com')
+        cy.get('[data-cy=create-blog-button]').click()
+        cy.get('[data-cy=togglable-button]').click()
+        cy.get('[data-cy=blog-title-input]').type('test blog2')
+        cy.get('[data-cy=blog-author-input]').type('test author2')
+        cy.get('[data-cy=blog-url-input]').type('www.testurl2.com')
+        cy.get('[data-cy=create-blog-button]').click()
+        cy.get('[data-cy=togglable-button]').click()
+        cy.get('[data-cy=blog-title-input]').type('test blog3')
+        cy.get('[data-cy=blog-author-input]').type('test author3')
+        cy.get('[data-cy=blog-url-input]').type('www.testurl3.com')
+        cy.get('[data-cy=create-blog-button]').click()
+        cy.contains('test blog3 test author3')
+      })
+
+      it('test', function() {
+        cy.get('[data-cy=blog-post]')
+          .each(($el) => {
+            cy.get($el).contains('view').click()
+          })
+
+        cy.get('[data-cy=like-button')
+          .each(($el, index) => {
+            for (let i = 0; i <= index; i++) {
+              cy.get($el).click()
+              cy.wait(200)
+            }
+          })
+
+        cy.contains('likes 3')
+          .then(() => {
+            cy.get('[data-cy=blog-post]')
+              .each(($el, index) => {
+                cy.get($el).contains(`likes ${3 - index}`)
+              })
+          })
+      })
+    })
   })
 })

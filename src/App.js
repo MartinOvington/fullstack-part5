@@ -155,7 +155,10 @@ const App = () => {
           <button onClick={handleLogout}>
             logout
           </button>
-          <Togglable buttonLabel="new blog" ref={blogFormRef} >
+          <Togglable
+            buttonLabel="new blog"
+            ref={blogFormRef}
+          >
             <BlogForm createBlog={addBlog} />
           </Togglable>
           {blogs.sort((b1, b2) => b2.likes - b1.likes)
